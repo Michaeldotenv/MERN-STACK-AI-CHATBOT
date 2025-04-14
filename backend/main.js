@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors({
   origin: ["http://localhost:5174",
-    "https://nexus-ai-chatbotx.onrender.com"
+    "https://nexus-ai-chatbotv1.onrender.com"
   ], // allow your frontend URL
   credentials: true,
 }));
