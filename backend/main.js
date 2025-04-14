@@ -21,7 +21,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser(process.env.JWT_SECRET));
 
 // Logging (disable in production for performance)
 if (process.env.NODE_ENV !== 'production') {
