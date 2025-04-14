@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors({
   origin: ["http://localhost:5174",
-    "https://NEXUS-AI.vercel.app"
+    "https://nexus-ai-chatbotx.onrender.com"
   ], // allow your frontend URL
   credentials: true,
 }));
@@ -27,7 +27,9 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
-
+app.get('/', (req, res) => {
+  res.send('API is working 🎉');
+});
 // Routes - Only user routes
 app.use('/api/v1', userRoutes);
 app.use('/api/chat', chatRoutes)

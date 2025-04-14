@@ -17,7 +17,7 @@ import { useAuthStore } from '../stores/useAuthStore.js';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = "https://NEXUS-AI.onrender.com/api/chat" || 'http://localhost:5000/api/chat'; // Your backend endpoint
+const API_URL = "https://nexus-chatbot-ai.onrender.com/api/chat" || 'http://localhost:5000/api/chat'; // Your backend endpoint
 const Chat = () => {
 const {user} = useAuthStore()
 const navigate = useNavigate()

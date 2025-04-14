@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Set base URL based on environment
-const BASE_URL = process.env.REACT_APP_API_URL || "https://NEXUS-AI.onrender.com/api/v1" || 'http://localhost:5000/api/v1';
+const BASE_URL = process.env.REACT_APP_API_URL || "https://nexus-chatbot-ai.onrender.com/api/v1" || 'http://localhost:5000/api/v1';
 
 const API = axios.create({
   baseURL: BASE_URL,
