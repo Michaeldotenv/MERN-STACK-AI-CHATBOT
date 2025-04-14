@@ -1,0 +1,19 @@
+
+
+# Environment files
+.env*
+!.env.example
+
+# Node modules
+node_modules/
+
+# Build folders
+/build/
+/dist/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store

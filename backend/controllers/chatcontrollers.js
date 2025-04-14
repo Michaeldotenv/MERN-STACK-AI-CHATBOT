@@ -22,11 +22,6 @@ export const handleChat = async (req, res) => {
 };*/
 import axios from 'axios';
 
-
-const MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.1"
-const HUGGINGFACE_API_KEY = "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"
-
-
 export const sendMessage = async (req, res, next) => {
   const { messages } = req.body;
 
@@ -41,11 +36,11 @@ export const sendMessage = async (req, res, next) => {
 
   try {
     const response = await axios.post(
-      `https://api-inference.huggingface.co/models/${MODEL_ID}`,
+      `https://api-inference.huggingface.co/models/${process.env.MODEL_ID}`,
       { inputs: prompt },
       {
         headers: {
-          Authorization: `Bearer ${HUGGINGFACE_API_KEY}`,
+          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
         },
       }
     );
