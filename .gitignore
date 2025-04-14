@@ -16,4 +16,4 @@ node_modules/
 .idea/
 
 # OS files
-.DS_Store
+.DS_Storenode_modules/
