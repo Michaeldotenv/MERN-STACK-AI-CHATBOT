@@ -1,7 +1,7 @@
 /*import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "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"
+  apiKey: process.env.OPENAI_API_KEY"
 });
 
 export const handleChat = async (req, res) => {
