@@ -9,21 +9,8 @@ import {
     sendResetPasswordSuccess
   } from "../services/email.js";
   import { randomBytes } from "crypto";
-const CLIENT_URL = "http://localhost:5174"
+const CLIENT_URL = "https://nexus-ai-chatbotv1.onrender.com"
 
-
-export const getAllUsers = async (req, res, next) => {
-    try {
-        const users = await User.find();
-        return res.status(200).json({ message: "Okay", users });
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: "Error", cause: error.message });
-    }
-};
-
-
-  
   export const Signup = async (req, res) => {
     try {
       const { name, email, password } = req.body;
