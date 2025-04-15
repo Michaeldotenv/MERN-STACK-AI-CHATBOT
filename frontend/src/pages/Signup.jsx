@@ -1,53 +1,36 @@
-// src/components/Signup.jsx
 import { useState } from 'react';
-import { Box, Container, TextField, Button, Typography, Alert, Link } from '@mui/material';
+import {
+  Box,
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Alert
+} from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaRobot, FaFingerprint, FaUserAstronaut, FaShieldAlt } from 'react-icons/fa';
+import { FaRobot, FaFingerprint, FaUserShield, FaSignInAlt } from 'react-icons/fa';
 import { GiArtificialIntelligence, GiSpinningBlades } from 'react-icons/gi';
 import { useAuthStore } from '../stores/useAuthStore.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
-const Signup = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
-  });
-
-  const [activeStep, setActiveStep] = useState(0);
+const Login = () => {
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [isHovering, setIsHovering] = useState(false);
   const navigate = useNavigate();
-  const { signup, loading, error, clearError } = useAuthStore();
-
-  const steps = [
-    { icon: <FaUserAstronaut />, field: 'username', label: 'Your Full Name' },
-    { icon: <FaFingerprint />, field: 'email', label: 'Your Email' },
-    { icon: <FaShieldAlt />, field: 'password', label: 'Your Nexus Password' }
-  ];
+  const { signin, loading, error, clearError } = useAuthStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleNext = () => {
-    if (activeStep < steps.length - 1) setActiveStep(activeStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep(prev => prev - 1);
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (activeStep !== steps.length - 1) return handleNext();
-    
     try {
-      await signup(formData);
-      navigate('/verify-email'); // Lowercase path and pass email
+      await signin(formData);
+      navigate('/');
     } catch (err) {
-      console.error('Signup error:', err);
-      // Error is already set in the store
+      console.error('Login error:', err);
     }
   };
 
@@ -120,7 +103,6 @@ const Signup = () => {
             overflow: 'hidden'
           }}
         >
-          {/* Plasma Ring */}
           <motion.div
             style={{
               position: 'absolute',
@@ -136,7 +118,6 @@ const Signup = () => {
             transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
           />
 
-          {/* Header */}
           <Box sx={{ textAlign: 'center', mb: 4, zIndex: 2, position: 'relative' }}>
             <motion.div
               animate={{ y: [0, -10, 0] }}
@@ -158,14 +139,13 @@ const Signup = () => {
                 WebkitTextFillColor: 'transparent'
               }}
             >
-              JOIN THE NEXUS NETWORK
+              NEXUS ACCESS PORTAL
             </motion.div>
             <Typography variant="body2" sx={{ opacity: 0.7 }}>
-              Register and initialize your neural identity
+              Authenticate your neural identity
             </Typography>
           </Box>
 
-          {/* Error Alert */}
           <AnimatePresence>
             {error && (
               <motion.div
@@ -174,11 +154,11 @@ const Signup = () => {
                 exit={{ opacity: 0 }}
                 style={{ marginBottom: '1rem' }}
               >
-                <Alert 
-                  severity="error" 
+                <Alert
+                  severity="error"
                   onClose={clearError}
-                  sx={{ 
-                    background: 'rgba(255, 0, 0, 0.1)', 
+                  sx={{
+                    background: 'rgba(255, 0, 0, 0.1)',
                     border: '1px solid rgba(255, 0, 0, 0.3)',
                     color: '#ff6b6b'
                   }}
@@ -189,149 +169,159 @@ const Signup = () => {
             )}
           </AnimatePresence>
 
-          {/* Step Form with Laser Swipe */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeStep}
-              initial={{ clipPath: 'inset(0% 0% 0% 100%)' }}
-              animate={{ clipPath: 'inset(0% 0% 0% 0%)' }}
-              exit={{ clipPath: 'inset(0% 100% 0% 0%)' }}
-              transition={{ duration: 0.5 }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Box
-                  sx={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: '50%',
-                    background: 'rgba(79, 195, 247, 0.2)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    mr: 2,
-                    fontSize: '1.5rem',
-                    color: '#4fc3f7'
-                  }}
-                >
-                  {steps[activeStep].icon}
-                </Box>
-                <Typography variant="h6">{steps[activeStep].label}</Typography>
-              </Box>
-
-              <TextField
-                fullWidth
-                name={steps[activeStep].field}
-                value={formData[steps[activeStep].field]}
-                onChange={handleChange}
-                type={activeStep === 2 ? 'password' : 'text'}
-                sx={{
-                  mb: 3,
-                  '& .MuiOutlinedInput-root': {
-                    color: '#e0f7fa',
-                    '& fieldset': {
-                      borderColor: 'rgba(79, 195, 247, 0.5)'
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#4fc3f7'
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#4fc3f7',
-                      boxShadow: '0 0 0 2px rgba(79, 195, 247, 0.2)'
-                    }
-                  },
-                  '& .MuiInputBase-input': {
-                    backgroundColor: 'rgba(5, 16, 28, 0.7)'
-                  }
-                }}
-              />
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Navigation */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              onClick={handleBack}
-              disabled={activeStep === 0}
+          {/* Email */}
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
               sx={{
-                color: '#4fc3f7',
-                visibility: activeStep === 0 ? 'hidden' : 'visible'
+                width: 50,
+                height: 50,
+                borderRadius: '50%',
+                background: 'rgba(79, 195, 247, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2,
+                fontSize: '1.5rem',
+                color: '#4fc3f7'
               }}
             >
-              Back
-            </Button>
-
-            {activeStep < steps.length - 1 ? (
-              <Button
-                type="button"
-                onClick={handleNext}
-                variant="outlined"
-                sx={{
-                  borderColor: '#4fc3f7',
-                  color: '#4fc3f7',
-                  '&:hover': {
-                    background: 'rgba(79, 195, 247, 0.1)'
-                  }
-                }}
-              >
-                Next
-              </Button>
-            ) : (
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onHoverStart={() => setIsHovering(true)}
-                onHoverEnd={() => setIsHovering(false)}
-              >
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={loading}
-                  sx={{
-                    background: 'linear-gradient(45deg, #4fc3f7, #00acc1)',
-                    fontSize: '1.1rem',
-                    px: 4
-                  }}
-                >
-                  <AnimatePresence mode="wait">
-                    {loading ? (
-                      <motion.span
-                        key="loading"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        PROCESSING...
-                      </motion.span>
-                    ) : isHovering ? (
-                      <motion.span
-                        key="activate"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        INITIALIZE PROFILE
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        key="complete"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        COMPLETE REGISTRATION
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </Button>
-              </motion.div>
-            )}
+              <FaFingerprint />
+            </Box>
+            <Typography variant="h6">Neural ID</Typography>
           </Box>
 
+          <TextField
+            fullWidth
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter your registered email"
+            sx={{
+              mb: 3,
+              '& .MuiOutlinedInput-root': {
+                color: '#e0f7fa',
+                '& fieldset': { borderColor: 'rgba(79, 195, 247, 0.5)' },
+                '&:hover fieldset': { borderColor: '#4fc3f7' },
+                '&.Mui-focused fieldset': { borderColor: '#4fc3f7' }
+              },
+              '& .MuiInputBase-input': {
+                backgroundColor: 'rgba(5, 16, 28, 0.7)'
+              }
+            }}
+          />
+
+          {/* Password */}
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                width: 50,
+                height: 50,
+                borderRadius: '50%',
+                background: 'rgba(79, 195, 247, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mr: 2,
+                fontSize: '1.5rem',
+                color: '#4fc3f7'
+              }}
+            >
+              <FaUserShield />
+            </Box>
+            <Typography variant="h6">Encryption Key</Typography>
+          </Box>
+
+          <TextField
+            fullWidth
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Enter your encryption key"
+            sx={{
+              mb: 3,
+              '& .MuiOutlinedInput-root': {
+                color: '#e0f7fa',
+                '& fieldset': { borderColor: 'rgba(79, 195, 247, 0.5)' },
+                '&:hover fieldset': { borderColor: '#4fc3f7' },
+                '&.Mui-focused fieldset': { borderColor: '#4fc3f7' }
+              },
+              '& .MuiInputBase-input': {
+                backgroundColor: 'rgba(5, 16, 28, 0.7)'
+              }
+            }}
+          />
+
+          {/* Forgot password */}
           <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Typography variant="body2" sx={{ opacity: 0.7 }}>
-              Already have an identity?{' '}
-              <Link to="/login" sx={{ color: '#4fc3f7', textDecoration: 'none' }}>
-                Access the Nexus
+              forgot your encryption key?{' '}
+              <Link to="/forgotpassword" style={{ color: '#4fc3f7', textDecoration: 'none' }}>
+                reconfigure your key
+              </Link>
+            </Typography>
+          </Box>
+
+          {/* Submit */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onHoverStart={() => setIsHovering(true)}
+            onHoverEnd={() => setIsHovering(false)}
+          >
+            <Button
+              type="submit"
+              fullWidth
+              disabled={loading}
+              variant="contained"
+              sx={{
+                background: 'linear-gradient(45deg, #4fc3f7, #00acc1)',
+                fontSize: '1.1rem',
+                py: 2,
+                mt: 2
+              }}
+            >
+              <AnimatePresence mode="wait">
+                {loading ? (
+                  <motion.span
+                    key="loading"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    SCANNING...
+                  </motion.span>
+                ) : isHovering ? (
+                  <motion.span
+                    key="authenticate"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                  >
+                    INITIATE NEURAL SCAN <FaSignInAlt />
+                  </motion.span>
+                ) : (
+                  <motion.span
+                    key="login"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                  >
+                    ACCESS NEXUS <FaSignInAlt />
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </Button>
+          </motion.div>
+
+          {/* Sign Up */}
+          <Box sx={{ textAlign: 'center', mt: 3 }}>
+            <Typography variant="body2" sx={{ opacity: 0.7 }}>
+              Not part of the network?{' '}
+              <Link to="/signup" style={{ color: '#4fc3f7', textDecoration: 'none' }}>
+                Initialize your identity
               </Link>
             </Typography>
           </Box>
@@ -375,4 +365,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;

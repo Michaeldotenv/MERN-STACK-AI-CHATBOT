@@ -97,7 +97,7 @@ const ResetPassword = () => {
                   Your password has been successfully reset!
                 </Typography>
                 <Button
-                  onClick={() => navigate('/signin')}
+                  onClick={() => navigate('/login')}
                   variant="outlined"
                   sx={{
                     borderColor: '#4fc3f7',
