@@ -52,28 +52,15 @@ export const Signup = async (req, res) => {
 };
 
 // ... (keep other controller functions the same, just ensure they use the updated tokenmanager)
-
 export const Signin = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ 
-        success: false, 
-        message: "Invalid credentials" 
-      });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ 
-        success: false, 
-        message: "Invalid credentials" 
-      });
-    }
-
-    generateToken(res, user._id, cookieOptions);
+    generateToken(res, user._id);
     await user.save();
 
     res.status(200).json({
@@ -87,12 +74,10 @@ export const Signin = async (req, res) => {
     });
   } catch (error) {
     console.error("Signin error:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Internal server error" 
-    });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 
 export const Signout = async (req, res) => {
   try {
