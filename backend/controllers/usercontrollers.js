@@ -7,15 +7,16 @@ import {
 } from "../services/email.js";
 import { randomBytes } from "crypto";
 
-const CLIENT_URL = "https://nexusai-chatbot.vercel.app";
+const CLIENT_URL = "https://nexus-ai-chatbotv2.onrender.com";
 
+// Cookie configuration - corrected domain format
 const cookieOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: 'none',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
+  secure: true, // Always secure for production
+  sameSite: 'none', // For cross-origin requests
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   path: '/',
-  domain: "nexusai-chatbot.vercel.app"
+  domain: "nexus-ai-chatbotv2.onrender.com" // Fixed domain format - no protocol or leading dot
 };
 
 export const Signup = async (req, res) => {
@@ -23,17 +24,17 @@ export const Signup = async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required"
+      return res.status(400).json({ 
+        success: false, 
+        message: "All fields are required" 
       });
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: "User already exists Signin"
+      return res.status(409).json({ 
+        success: false, 
+        message: "User already exists Signin" 
       });
     }
 
@@ -57,9 +58,9 @@ export const Signup = async (req, res) => {
     });
   } catch (error) {
     console.error("Signup error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error"
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal server error" 
     });
   }
 };
@@ -70,17 +71,17 @@ export const Signin = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid credentials"
+      return res.status(401).json({ 
+        success: false, 
+        message: "Invalid credentials" 
       });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid credentials"
+      return res.status(401).json({ 
+        success: false, 
+        message: "Invalid credentials" 
       });
     }
 
@@ -98,25 +99,27 @@ export const Signin = async (req, res) => {
     });
   } catch (error) {
     console.error("Signin error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error"
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal server error" 
     });
   }
 };
 
 export const Signout = async (req, res) => {
   try {
+    // Using the utility function for consistency
     clearAuthCookies(res);
-    res.status(200).json({
-      success: true,
-      message: "Signed out successfully"
+    
+    res.status(200).json({ 
+      success: true, 
+      message: "Signed out successfully" 
     });
   } catch (error) {
     console.error("Signout error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to sign out"
+    res.status(500).json({ 
+      success: false, 
+      message: "Failed to sign out" 
     });
   }
 };
@@ -125,9 +128,9 @@ export const CheckAuth = async (req, res) => {
   try {
     const user = await User.findById(req.userId).select('-password');
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized"
+      return res.status(401).json({ 
+        success: false, 
+        message: "Unauthorized" 
       });
     }
 
@@ -137,9 +140,9 @@ export const CheckAuth = async (req, res) => {
     });
   } catch (error) {
     console.error("Check auth error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error"
+   return res.status(500).json({ 
+      success: false, 
+      message: "Internal server error" 
     });
   }
 };
@@ -150,33 +153,34 @@ export const ForgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(200).json({
-        success: true,
-        message: "If an account exists, a reset link has been sent"
+      // Don't reveal if user exists for security
+      return res.status(200).json({ 
+        success: true, 
+        message: "If an account exists, a reset link has been sent" 
       });
     }
 
     const resetToken = randomBytes(20).toString("hex");
-    const resetTokenExpiresAt = new Date(Date.now() + 3600000);
+    const resetTokenExpiresAt = new Date(Date.now() + 3600000); // 1 hour
 
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpiresAt = resetTokenExpiresAt;
     await user.save();
 
     await sendPasswordResetEmail(
-      user.email,
+      user.email, 
       `${CLIENT_URL}/reset-password/${resetToken}`
     );
 
-    res.status(200).json({
-      success: true,
-      message: "Password reset link sent"
+    res.status(200).json({ 
+      success: true, 
+      message: "Password reset link sent" 
     });
   } catch (error) {
     console.error("Forgot password error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error"
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal server error" 
     });
   }
 };
@@ -187,16 +191,16 @@ export const ResetPassword = async (req, res) => {
     const { password, confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
-      return res.status(400).json({
-        success: false,
-        message: "Passwords do not match"
+      return res.status(400).json({ 
+        success: false, 
+        message: "Passwords do not match" 
       });
     }
 
     if (password.length < 8) {
-      return res.status(400).json({
-        success: false,
-        message: "Password must be at least 8 characters"
+      return res.status(400).json({ 
+        success: false, 
+        message: "Password must be at least 8 characters" 
       });
     }
 
@@ -206,9 +210,9 @@ export const ResetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid or expired token"
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid or expired token" 
       });
     }
 
@@ -219,15 +223,15 @@ export const ResetPassword = async (req, res) => {
 
     await sendResetPasswordSuccess(user.email, user.name);
 
-    res.status(200).json({
-      success: true,
-      message: "Password updated successfully"
+    res.status(200).json({ 
+      success: true, 
+      message: "Password updated successfully" 
     });
   } catch (error) {
     console.error("Password reset error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error"
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal server error" 
     });
   }
 };

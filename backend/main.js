@@ -13,20 +13,20 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Centralized configurations
+// Hardcoded configurations - centralized for consistency
 const PORT = 5000;
-const FRONTEND_URL = "https://nexusai-chatbot.vercel.app";
+const FRONTEND_URL = "https://nexus-ai-chatbotv2.onrender.com";
 const JWT_SECRET = "vihb7e8hrwivwpi9ivg9oj589vjwinrjhojgrfuygi";
-const COOKIE_DOMAIN = "nexusai-chatbot.vercel.app";
+const COOKIE_DOMAIN = "nexus-ai-chatbotv2.onrender.com";
 
-// Set as environment variables for compatibility
+// Set as environment variables for compatibility with rest of the app
 process.env.JWT_SECRET = JWT_SECRET;
 process.env.NODE_ENV = "production";
 process.env.JWT_EXPIRES_IN = "7d";
 
 const app = express();
 
-// CORS configuration
+// Enhanced CORS configuration
 app.use(cors({
   origin: [
     FRONTEND_URL,
@@ -41,17 +41,19 @@ app.use(cors({
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser(JWT_SECRET));
+app.use(cookieParser(JWT_SECRET)); // Using hardcoded secret
+
+// Logging
 app.use(morgan('dev'));
 
-// Routes
+// API Routes
 app.use('/api/v1', userRoutes);
 app.use('/api/chat', chatRoutes);
 
-// Static frontend
+// Serve static files from React
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-// Health check
+// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'healthy' });
 });
@@ -61,7 +63,7 @@ app.get('/', (req, res) => {
   res.send('API is working 🎉');
 });
 
-// React fallback
+// Handle React routing - return all requests to React app
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
@@ -69,7 +71,7 @@ app.get('*', (req, res) => {
 // Error handling
 app.use(errorHandler);
 
-// Database + Server
+// Database connection and server start
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
