@@ -34,26 +34,26 @@ export const Signup = async (req, res) => {
     if (existingUser) {
       return res.status(409).json({ 
         success: false, 
-        message: "User already exists" 
+        message: "User already exists Signin" 
       });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const newUser = await User.create({
+    const user = await User.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    generateToken(res, newUser._id, cookieOptions);
+    generateToken(res, user._id, cookieOptions);
     res.status(201).json({
       success: true,
       message: "User created successfully!",
       user: {
-        _id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
+        _id: user._id,
+        name: user.name,
+        email: user.email,
       }
     });
   } catch (error) {
@@ -86,7 +86,6 @@ export const Signin = async (req, res) => {
     }
 
     generateToken(res, user._id, cookieOptions);
-    user.lastLogin = new Date();
     await user.save();
 
     res.status(200).json({
@@ -141,7 +140,7 @@ export const CheckAuth = async (req, res) => {
     });
   } catch (error) {
     console.error("Check auth error:", error);
-    res.status(500).json({ 
+   return res.status(500).json({ 
       success: false, 
       message: "Internal server error" 
     });
