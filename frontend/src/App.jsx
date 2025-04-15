@@ -63,7 +63,7 @@ function App() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         
         {/* 404 - No guard needed */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="/404" element={<NotFound />} />
       </Routes>
     </ThemeProvider>
   );
