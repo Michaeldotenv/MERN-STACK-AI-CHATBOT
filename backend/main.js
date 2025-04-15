@@ -27,6 +27,7 @@ const app = express();
 app.use(cors({
   origin: [
     FRONTEND_URL,
+    "https://nexus-ai-chatbotv1.onrender.com",
     "http://localhost:5174"
   ],
   credentials: true,
