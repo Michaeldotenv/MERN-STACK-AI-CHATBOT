@@ -1,29 +1,28 @@
-// src/components/Login.jsx
 import { useState } from 'react';
-import { Box, Container, TextField, Button, Typography, Link, Alert } from '@mui/material';
+import {
+  Box,
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Alert
+} from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaRobot, FaFingerprint, FaUserShield, FaSignInAlt } from 'react-icons/fa';
 import { GiArtificialIntelligence, GiSpinningBlades } from 'react-icons/gi';
 import { useAuthStore } from '../stores/useAuthStore.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [isHovering, setIsHovering] = useState(false);
   const navigate = useNavigate();
   const { signin, loading, error, clearError } = useAuthStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-const handleForgotPassword = ()=>{
-  navigate("/forgotpassword")
-}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +31,6 @@ const handleForgotPassword = ()=>{
       navigate('/');
     } catch (err) {
       console.error('Login error:', err);
-      // Error is already set in the store
     }
   };
 
@@ -105,7 +103,6 @@ const handleForgotPassword = ()=>{
             overflow: 'hidden'
           }}
         >
-          {/* Plasma Ring */}
           <motion.div
             style={{
               position: 'absolute',
@@ -121,7 +118,6 @@ const handleForgotPassword = ()=>{
             transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
           />
 
-          {/* Header */}
           <Box sx={{ textAlign: 'center', mb: 4, zIndex: 2, position: 'relative' }}>
             <motion.div
               animate={{ y: [0, -10, 0] }}
@@ -150,7 +146,6 @@ const handleForgotPassword = ()=>{
             </Typography>
           </Box>
 
-          {/* Error Alert */}
           <AnimatePresence>
             {error && (
               <motion.div
@@ -159,11 +154,11 @@ const handleForgotPassword = ()=>{
                 exit={{ opacity: 0 }}
                 style={{ marginBottom: '1rem' }}
               >
-                <Alert 
-                  severity="error" 
+                <Alert
+                  severity="error"
                   onClose={clearError}
-                  sx={{ 
-                    background: 'rgba(255, 0, 0, 0.1)', 
+                  sx={{
+                    background: 'rgba(255, 0, 0, 0.1)',
                     border: '1px solid rgba(255, 0, 0, 0.3)',
                     color: '#ff6b6b'
                   }}
@@ -174,7 +169,7 @@ const handleForgotPassword = ()=>{
             )}
           </AnimatePresence>
 
-          {/* Email Field */}
+          {/* Email */}
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <Box
               sx={{
@@ -205,15 +200,9 @@ const handleForgotPassword = ()=>{
               mb: 3,
               '& .MuiOutlinedInput-root': {
                 color: '#e0f7fa',
-                '& fieldset': {
-                  borderColor: 'rgba(79, 195, 247, 0.5)'
-                },
-                '&:hover fieldset': {
-                  borderColor: '#4fc3f7'
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#4fc3f7'
-                }
+                '& fieldset': { borderColor: 'rgba(79, 195, 247, 0.5)' },
+                '&:hover fieldset': { borderColor: '#4fc3f7' },
+                '&.Mui-focused fieldset': { borderColor: '#4fc3f7' }
               },
               '& .MuiInputBase-input': {
                 backgroundColor: 'rgba(5, 16, 28, 0.7)'
@@ -221,7 +210,7 @@ const handleForgotPassword = ()=>{
             }}
           />
 
-          {/* Password Field */}
+          {/* Password */}
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <Box
               sx={{
@@ -253,15 +242,9 @@ const handleForgotPassword = ()=>{
               mb: 3,
               '& .MuiOutlinedInput-root': {
                 color: '#e0f7fa',
-                '& fieldset': {
-                  borderColor: 'rgba(79, 195, 247, 0.5)'
-                },
-                '&:hover fieldset': {
-                  borderColor: '#4fc3f7'
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#4fc3f7'
-                }
+                '& fieldset': { borderColor: 'rgba(79, 195, 247, 0.5)' },
+                '&:hover fieldset': { borderColor: '#4fc3f7' },
+                '&.Mui-focused fieldset': { borderColor: '#4fc3f7' }
               },
               '& .MuiInputBase-input': {
                 backgroundColor: 'rgba(5, 16, 28, 0.7)'
@@ -269,16 +252,17 @@ const handleForgotPassword = ()=>{
             }}
           />
 
-<Box sx={{ textAlign: 'center', mt: 3 }}>
+          {/* Forgot password */}
+          <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Typography variant="body2" sx={{ opacity: 0.7 }}>
               forgot your encryption key?{' '}
-              <Link to="/forgotpassword" sx={{ color: '#4fc3f7', textDecoration: 'none' }}>
-               reconfigure your key
+              <Link to="/forgotpassword" style={{ color: '#4fc3f7', textDecoration: 'none' }}>
+                reconfigure your key
               </Link>
             </Typography>
           </Box>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -332,10 +316,11 @@ const handleForgotPassword = ()=>{
             </Button>
           </motion.div>
 
+          {/* Sign Up */}
           <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Typography variant="body2" sx={{ opacity: 0.7 }}>
               Not part of the network?{' '}
-              <Link href="/signup" sx={{ color: '#4fc3f7', textDecoration: 'none' }}>
+              <Link to="/signup" style={{ color: '#4fc3f7', textDecoration: 'none' }}>
                 Initialize your identity
               </Link>
             </Typography>
