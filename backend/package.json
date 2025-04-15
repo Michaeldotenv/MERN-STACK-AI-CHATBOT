@@ -5,7 +5,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon main.js",
-    "start": "node main.js"
+    "start": "node main.js",
+    "preinstall": "npx npm-force-resolutions",
+  "postinstall": "rm -rf node_modules/path-to-regexp"
+  },
+  "resolutions": {
+    "path-to-regexp": "1.8.0"
   },
   "keywords": [],
   "author": "",
@@ -32,4 +37,5 @@
   "devDependencies": {
     "nodemon": "^3.1.9"
   }
+  
 }
