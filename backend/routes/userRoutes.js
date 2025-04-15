@@ -63,7 +63,7 @@ router.post("/signout",
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      domain: 'nexus-ai-chatbotv1.onrender.com',
+      domain: 'nexus-ai-chatbotv2.onrender.com',
       path: '/'
     });
     next();
