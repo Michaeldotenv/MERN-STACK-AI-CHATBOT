@@ -29,7 +29,7 @@ export const verifyToken = async (req, res, next) => {
       res.clearCookie('token', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
+        sameSite: 'none'
       });
       return res.status(404).json({
         success: false,
@@ -50,7 +50,7 @@ export const verifyToken = async (req, res, next) => {
     res.clearCookie('token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict'
+      sameSite: 'none'
     });
 
     const response = {

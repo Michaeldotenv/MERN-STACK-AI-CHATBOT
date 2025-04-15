@@ -8,20 +8,22 @@ import jwt from "jsonwebtoken";
  * @returns {string} token - The generated JWT token
  * @throws {Error} If token generation fails
  */
+
 export const generateToken = (res, userId, options = {}) => {
   // Validate required environment variables
-  if (!process.env.JWT_SECRET || !process.env.JWT_EXPIRES_IN) {
+  if (!process.env.JWT_SECRET) {
     throw new Error("JWT configuration incomplete");
   }
+  const COOKIE_DOMAIN = "nexus-ai-chatbotv1.onrender.com";
 
   // Default cookie configuration
   const defaultCookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    maxAge: parseInt(process.env.JWT_EXPIRES_IN) || 7 * 24 * 60 * 60 * 1000, // 7 days default
+    sameSite: "none",
+    maxAge:  7 * 24 * 60 * 60 * 1000, // 7 days default
     path: "/",
-    domain: process.env.COOKIE_DOMAIN || undefined,
+    domain: COOKIE_DOMAIN || undefined,
     signed: true // Requires cookie-parser middleware with secret
   };
 
@@ -30,8 +32,8 @@ export const generateToken = (res, userId, options = {}) => {
     const token = jwt.sign(
       { 
         userId,
-        iss: process.env.JWT_ISSUER || 'nexus-chatbot-api',
-        aud: process.env.JWT_AUDIENCE || 'nexus-chatbot-client'
+        iss:  'nexus-chatbot-api',
+        aud: 'nexus-chatbot-client'
       },
       process.env.JWT_SECRET,
       {
@@ -81,8 +83,8 @@ export const verifyToken = (token) => {
 
   return jwt.verify(token, process.env.JWT_SECRET, {
     algorithms: ['HS256'],
-    issuer: process.env.JWT_ISSUER,
-    audience: process.env.JWT_AUDIENCE
+  issuer:  'nexus-chatbot-api',
+        audience: 'nexus-chatbot-client'
   });
 };
 
@@ -95,12 +97,12 @@ export const clearAuthCookies = (res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    domain: process.env.COOKIE_DOMAIN || undefined
+    domain:COOKIE_DOMAIN || undefined
   };
 
   res.clearCookie("token", options);
   res.clearCookie("auth_check", { 
     path: "/",
-    domain: process.env.COOKIE_DOMAIN || undefined 
+    domain:COOKIE_DOMAIN || undefined 
   });
 };

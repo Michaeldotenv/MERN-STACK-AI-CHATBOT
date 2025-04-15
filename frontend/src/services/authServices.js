@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://nexus-chatbot-ai.onrender.com/api/v1',
+  baseURL: 'https://nexus-chatbot-ai.onrender.com/api/v1',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

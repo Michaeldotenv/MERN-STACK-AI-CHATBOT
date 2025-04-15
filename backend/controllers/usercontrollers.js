@@ -7,16 +7,16 @@ import {
 } from "../services/email.js";
 import { randomBytes } from "crypto";
 
-const CLIENT_URL = process.env.CLIENT_URL || "https://nexus-ai-chatbotv1.onrender.com";
+const CLIENT_URL = "https://nexus-ai-chatbotv1.onrender.com";
 
 // Cookie configuration
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: 'strict',
+  sameSite: 'none',
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   path: '/',
-  domain: process.env.COOKIE_DOMAIN || undefined
+  domain: ".https://nexus-ai-chatbotv1.onrender.com"
 };
 
 export const Signup = async (req, res) => {
