@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Update the baseURL to match your actual backend domain
 const API = axios.create({
-  baseURL: 'https://nexus-ai-chatbotv1.onrender.com/api/v1',
+  baseURL: 'https://nexus-chatbot-ai.onrender.com/api/v1',
   withCredentials: true, // Critical for sending/receiving cookies
   headers: {
     'Content-Type': 'application/json',
