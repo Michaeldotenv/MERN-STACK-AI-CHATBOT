@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { useEffect } from 'react';
 import Login from './pages/Login';
@@ -35,25 +35,36 @@ const darkTheme = createTheme({
 });
 
 function App() {
-  const { checkAuth } = useAuthStore();
+  const { checkAuth, isAuthenticated } = useAuthStore();
+  const location = useLocation();
 
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+    // Only check auth if not already authenticated
+    if (!isAuthenticated) {
+      checkAuth();
+    }
+  }, [checkAuth, isAuthenticated]);
 
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-        <Routes>
-          <Route path="/" element={<AuthGuard><Home /></AuthGuard>} />
-          <Route path="/login" element={<GuestGuard><Login /></GuestGuard>} />
-          <Route path="/signup" element={<GuestGuard><Signup /></GuestGuard>} />
-          <Route path="/chats" element={<AuthGuard><Chat /></AuthGuard>} />
-          <Route path="/demo" element={<GuestGuard><AuthDemoPage /></GuestGuard>} />
-          <Route path="/forgotpassword" element={<GuestGuard><ForgotPassword /></GuestGuard>} />
-          <Route path="/reset-password/:token" element={<GuestGuard><ResetPassword /></GuestGuard>} />
-          <Route path="*" element={<GuestGuard><NotFound /></GuestGuard>} />
-        </Routes>
+      <Routes location={location} key={location.pathname}>
+        {/* Protected routes */}
+        <Route path="/" element={<AuthGuard><Home /></AuthGuard>} />
+        <Route path="/chats" element={<AuthGuard><Chat /></AuthGuard>} />
+        
+        {/* Auth routes */}
+        <Route path="/login" element={<GuestGuard><Login /></GuestGuard>} />
+        <Route path="/signup" element={<GuestGuard><Signup /></GuestGuard>} />
+        <Route path="/demo" element={<GuestGuard><AuthDemoPage /></GuestGuard>} />
+        
+        {/* Password recovery (should be accessible without auth) */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        
+        {/* 404 - No guard needed */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </ThemeProvider>
   );
 }
