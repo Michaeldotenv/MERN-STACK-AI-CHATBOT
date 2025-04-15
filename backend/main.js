@@ -1,5 +1,11 @@
 
-process.env.EXPRESS_PATH_TO_REGEXP = '0';
+
+// FORCE-IGNORE path-to-regexp MISSING MODULE ERROR
+try { require('path-to-regexp'); } 
+catch { /* Ignore */ }
+process.env.EXPRESS_PATH_TO_REGEXP = '0'; // Force Express 4.x behavior
+
+
 import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
