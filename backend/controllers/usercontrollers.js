@@ -1,6 +1,6 @@
 import User from "../models/usermodel.js";
 import bcrypt from "bcryptjs";
-import { generateToken } from "../utils/tokenmanager.js";
+import { generateToken, clearAuthCookies } from "../utils/tokenmanager.js";
 import {
   sendPasswordResetEmail,
   sendResetPasswordSuccess
@@ -9,14 +9,14 @@ import { randomBytes } from "crypto";
 
 const CLIENT_URL = "https://nexus-ai-chatbotv1.onrender.com";
 
-// Cookie configuration
+// Cookie configuration - corrected domain format
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'none',
+  secure: true, // Always secure for production
+  sameSite: 'none', // For cross-origin requests
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   path: '/',
-  domain: ".https://nexus-ai-chatbotv1.onrender.com"
+  domain: "nexus-ai-chatbotv1.onrender.com" // Fixed domain format - no protocol or leading dot
 };
 
 export const Signup = async (req, res) => {
@@ -109,7 +109,9 @@ export const Signin = async (req, res) => {
 
 export const Signout = async (req, res) => {
   try {
-    res.clearCookie("token", cookieOptions);
+    // Using the utility function for consistency
+    clearAuthCookies(res);
+    
     res.status(200).json({ 
       success: true, 
       message: "Signed out successfully" 

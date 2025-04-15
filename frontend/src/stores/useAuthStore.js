@@ -1,6 +1,6 @@
 // src/stores/useAuthStore.js
 import { create } from 'zustand';
-import { apiSignIn, apiSignUp, apiSignOut, apiCheckAuth , apiForgotPassword, apiResetPassword} from '../services/authService';
+import { apiSignIn, apiSignUp, apiSignOut, apiCheckAuth, apiForgotPassword, apiResetPassword } from '../services/authService';
 
 export const useAuthStore = create((set) => ({
   user: null,
@@ -50,24 +50,6 @@ export const useAuthStore = create((set) => ({
     }
   },
   
- /*verifyEmail: async (code) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await apiVerifyEmail(code);
-      set({ 
-        user: response.user,
-        isLoading: false 
-      });
-      return response;
-    } catch (error) {
-      set({ 
-        error: error.message || 'Verification failed',
-        isLoading: false 
-      });
-      throw error;
-    }
-  },*/
-  
   signout: async () => {
     set({ loading: true, error: null });
     try {
@@ -77,14 +59,21 @@ export const useAuthStore = create((set) => ({
         isAuthenticated: false, 
         loading: false 
       });
-      // Force full page reload to clear all state
+      
+      // No need to reload the page, but we'll do it to ensure
+      // all state is cleared, including cookies
       window.location.href = '/login';
     } catch (error) {
+      // Even if logout fails on the server, clear local state
       set({ 
-        error: error.message || 'Failed to sign out', 
-        loading: false 
+        user: null,
+        isAuthenticated: false,
+        loading: false,
+        error: error.message || 'Failed to sign out'
       });
-      throw error;
+      
+      // Still redirect to login even if there was an error
+      window.location.href = '/login';
     }
   },
   

@@ -1,9 +1,10 @@
 // src/services/authService.js
 import axios from 'axios';
 
+// Update the baseURL to match your actual backend domain
 const API = axios.create({
-  baseURL: 'https://nexus-chatbot-ai.onrender.com/api/v1',
-  withCredentials: true,
+  baseURL: 'https://nexus-ai-chatbotv1.onrender.com/api/v1',
+  withCredentials: true, // Critical for sending/receiving cookies
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -19,16 +20,18 @@ API.interceptors.response.use(
 
     if (status === 401) {
       message = 'Session expired, please login again';
-      // Optionally trigger logout here
+      // We don't need to trigger logout here, as the auth guard will handle it
     }
 
     return Promise.reject(new Error(message));
   }
 );
 
-// Request interceptor for JWT
+// Request interceptor - No need for localStorage token with HTTP-only cookies
+// But we'll keep it as a fallback mechanism
 API.interceptors.request.use((config) => {
-  // If token exists in localStorage, use it
+  // No need to set Authorization header as we're using cookies
+  // But we'll leave it as a fallback
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -49,8 +52,6 @@ export const apiSignUp = (userData) =>
 export const apiSignOut = () => API.post('/signout');
 
 export const apiCheckAuth = () => API.get('/check-auth');
-
-export const apiVerifyEmail = (code) => API.post('/verify-email', { code });
 
 export const apiForgotPassword = (email) => 
   API.post('/forgot-password', { email });

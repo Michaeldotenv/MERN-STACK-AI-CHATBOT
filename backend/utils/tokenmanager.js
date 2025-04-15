@@ -9,21 +9,20 @@ import jwt from "jsonwebtoken";
  * @throws {Error} If token generation fails
  */
 
-export const generateToken = (res, userId, options = {}) => {
-  // Validate required environment variables
-  if (!process.env.JWT_SECRET) {
-    throw new Error("JWT configuration incomplete");
-  }
-  const COOKIE_DOMAIN = "nexus-ai-chatbotv1.onrender.com";
+// Hardcoded values for consistency
+const JWT_SECRET = "vihb7e8hrwivwpi9ivg9oj589vjwinrjhojgrfuygi";
+const COOKIE_DOMAIN = "nexus-ai-chatbotv1.onrender.com";
+const JWT_EXPIRES_IN = "7d";
 
-  // Default cookie configuration
+export const generateToken = (res, userId, options = {}) => {
+  // Default cookie configuration - consistent with other files
   const defaultCookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true, // Always secure for production
     sameSite: "none",
-    maxAge:  7 * 24 * 60 * 60 * 1000, // 7 days default
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days default
     path: "/",
-    domain: COOKIE_DOMAIN || undefined,
+    domain: COOKIE_DOMAIN,
     signed: true // Requires cookie-parser middleware with secret
   };
 
@@ -32,12 +31,12 @@ export const generateToken = (res, userId, options = {}) => {
     const token = jwt.sign(
       { 
         userId,
-        iss:  'nexus-chatbot-api',
+        iss: 'nexus-chatbot-api',
         aud: 'nexus-chatbot-client'
       },
-      process.env.JWT_SECRET,
+      JWT_SECRET,
       {
-        expiresIn: process.env.JWT_EXPIRES_IN,
+        expiresIn: JWT_EXPIRES_IN,
         algorithm: 'HS256' // Explicitly specify algorithm
       }
     );
@@ -49,14 +48,12 @@ export const generateToken = (res, userId, options = {}) => {
     });
 
     // Also set a simple cookie for cross-origin detection if needed
-    if (process.env.NODE_ENV === "production") {
-      res.cookie("auth_check", "1", {
-        maxAge: defaultCookieOptions.maxAge,
-        domain: defaultCookieOptions.domain,
-        secure: true,
-        sameSite: 'none'
-      });
-    }
+    res.cookie("auth_check", "1", {
+      maxAge: defaultCookieOptions.maxAge,
+      domain: defaultCookieOptions.domain,
+      secure: true,
+      sameSite: 'none'
+    });
 
     return token;
   } catch (error) {
@@ -81,10 +78,10 @@ export const verifyToken = (token) => {
     throw new Error("No token provided");
   }
 
-  return jwt.verify(token, process.env.JWT_SECRET, {
+  return jwt.verify(token, JWT_SECRET, {
     algorithms: ['HS256'],
-  issuer:  'nexus-chatbot-api',
-        audience: 'nexus-chatbot-client'
+    issuer: 'nexus-chatbot-api',
+    audience: 'nexus-chatbot-client'
   });
 };
 
@@ -95,14 +92,17 @@ export const verifyToken = (token) => {
 export const clearAuthCookies = (res) => {
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
+    sameSite: "none",
     path: "/",
-    domain:COOKIE_DOMAIN || undefined
+    domain: COOKIE_DOMAIN
   };
 
   res.clearCookie("token", options);
   res.clearCookie("auth_check", { 
     path: "/",
-    domain:COOKIE_DOMAIN || undefined 
+    secure: true,
+    sameSite: "none", 
+    domain: COOKIE_DOMAIN 
   });
 };

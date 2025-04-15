@@ -13,15 +13,20 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
-const PORT = 5000; // Hardcoded port
-
-// Hardcoded configurations
+// Hardcoded configurations - centralized for consistency
+const PORT = 5000;
 const FRONTEND_URL = "https://nexus-ai-chatbotv1.onrender.com";
-const JWT_SECRET = "vihb7e8hrwivwpi9ivg9oj589vjwinrjhojgrfuygi"; // Replace with your actual secret
+const JWT_SECRET = "vihb7e8hrwivwpi9ivg9oj589vjwinrjhojgrfuygi";
 const COOKIE_DOMAIN = "nexus-ai-chatbotv1.onrender.com";
 
-// Enhanced CORS configuration (hardcoded)
+// Set as environment variables for compatibility with rest of the app
+process.env.JWT_SECRET = JWT_SECRET;
+process.env.NODE_ENV = "production";
+process.env.JWT_EXPIRES_IN = "7d";
+
+const app = express();
+
+// Enhanced CORS configuration
 app.use(cors({
   origin: [
     FRONTEND_URL,
@@ -39,7 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(JWT_SECRET)); // Using hardcoded secret
 
 // Logging
-app.use(morgan('dev')); // Always show dev logs in this hardcoded version
+app.use(morgan('dev'));
 
 // API Routes
 app.use('/api/v1', userRoutes);
@@ -47,11 +52,6 @@ app.use('/api/chat', chatRoutes);
 
 // Serve static files from React
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-// Handle React routing - return all requests to React app
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
-});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -61,6 +61,11 @@ app.get('/api/health', (req, res) => {
 // Root endpoint
 app.get('/', (req, res) => {
   res.send('API is working 🎉');
+});
+
+// Handle React routing - return all requests to React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
 // Error handling

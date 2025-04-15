@@ -1,5 +1,9 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/usermodel.js';
+import { clearAuthCookies } from '../utils/tokenmanager.js';
+
+// Hardcoded secret for consistency
+const JWT_SECRET = "vihb7e8hrwivwpi9ivg9oj589vjwinrjhojgrfuygi";
 
 // Enhanced token verification middleware
 export const verifyToken = async (req, res, next) => {
@@ -18,19 +22,17 @@ export const verifyToken = async (req, res, next) => {
     }
 
     // Verify token with proper error handling
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     
-    // Fetch user with cache consideration
+    // Store userId in req - critical for other middleware/routes
+    req.userId = decoded.userId;
+    
+    // Fetch user with necessary fields
     const user = await User.findById(decoded.userId)
-      .select('-password -__v')
-      .cache(decoded.userId); // Optional caching
+      .select('-password -__v');
 
     if (!user) {
-      res.clearCookie('token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none'
-      });
+      clearAuthCookies(res);
       return res.status(404).json({
         success: false,
         message: "User account not found",
@@ -46,12 +48,8 @@ export const verifyToken = async (req, res, next) => {
   } catch (error) {
     console.error("Auth Middleware Error:", error);
     
-    // Always clear invalid tokens
-    res.clearCookie('token', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none'
-    });
+    // Always clear invalid tokens with consistent options
+    clearAuthCookies(res);
 
     const response = {
       success: false,

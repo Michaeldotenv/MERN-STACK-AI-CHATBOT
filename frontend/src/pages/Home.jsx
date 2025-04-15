@@ -9,13 +9,18 @@ const Home = () => {
   const { user, signout } = useAuthStore();
   const navigate = useNavigate();
   const [isHovering, setIsHovering] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleSignout = async () => {
+    if (isSigningOut) return; // Prevent multiple clicks
+    
+    setIsSigningOut(true);
     try {
       await signout();
-      navigate('/login');
+      // No need for navigate here since signout function handles redirection
     } catch (error) {
       console.error('Signout error:', error);
+      setIsSigningOut(false); // Reset state if error occurs
     }
   };
 
@@ -87,6 +92,7 @@ const Home = () => {
               <Button
                 onClick={handleSignout}
                 variant="outlined"
+                disabled={isSigningOut}
                 startIcon={<FaSignOutAlt />}
                 sx={{
                   borderColor: '#4fc3f7',
@@ -94,10 +100,14 @@ const Home = () => {
                   '&:hover': {
                     background: 'rgba(79, 195, 247, 0.1)',
                     borderColor: '#4fc3f7'
+                  },
+                  '&.Mui-disabled': {
+                    borderColor: 'rgba(79, 195, 247, 0.3)',
+                    color: 'rgba(79, 195, 247, 0.3)'
                   }
                 }}
               >
-                {isHovering ? 'Disconnect' : 'Sign Out'}
+                {isSigningOut ? 'Signing out...' : isHovering ? 'Disconnect' : 'Sign Out'}
               </Button>
             </motion.div>
           </Box>
