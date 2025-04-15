@@ -7,17 +7,7 @@ import {
 } from "../services/email.js";
 import { randomBytes } from "crypto";
 
-const CLIENT_URL = "https://nexus-ai-chatbotv2.onrender.com";
-
-// Cookie configuration - corrected domain format
-const cookieOptions = {
-  httpOnly: true,
-  secure: true, // Always secure for production
-  sameSite: 'none', // For cross-origin requests
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  path: '/',
-  domain: "nexus-ai-chatbotv2.onrender.com" // Fixed domain format - no protocol or leading dot
-};
+const CLIENT_URL = process.env.FRONTEND_URL || "https://nexus-ai-chatbotv2.onrender.com";
 
 export const Signup = async (req, res) => {
   try {
@@ -34,19 +24,15 @@ export const Signup = async (req, res) => {
     if (existingUser) {
       return res.status(409).json({ 
         success: false, 
-        message: "User already exists Signin" 
+        message: "User already exists. Please sign in." 
       });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const user = await User.create({ name, email, password: hashedPassword });
 
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-    });
-
-    generateToken(res, user._id, cookieOptions);
+    generateToken(res, user._id);
+    
     res.status(201).json({
       success: true,
       message: "User created successfully!",
@@ -64,6 +50,8 @@ export const Signup = async (req, res) => {
     });
   }
 };
+
+// ... (keep other controller functions the same, just ensure they use the updated tokenmanager)
 
 export const Signin = async (req, res) => {
   try {

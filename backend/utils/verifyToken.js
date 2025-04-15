@@ -2,13 +2,8 @@ import jwt from 'jsonwebtoken';
 import User from '../models/usermodel.js';
 import { clearAuthCookies } from '../utils/tokenmanager.js';
 
-// Hardcoded secret for consistency
-const JWT_SECRET = "vihb7e8hrwivwpi9ivg9oj589vjwinrjhojgrfuygi";
-
-// Enhanced token verification middleware
 export const verifyToken = async (req, res, next) => {
   try {
-    // Multiple token sources with proper fallback
     const token = req.signedCookies?.token || 
                  req.cookies?.token || 
                  req.headers['authorization']?.replace('Bearer ', '');
@@ -21,15 +16,10 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
-    // Verify token with proper error handling
-    const decoded = jwt.verify(token, JWT_SECRET);
-    
-    // Store userId in req - critical for other middleware/routes
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.userId;
     
-    // Fetch user with necessary fields
-    const user = await User.findById(decoded.userId)
-      .select('-password -__v');
+    const user = await User.findById(decoded.userId).select('-password -__v');
 
     if (!user) {
       clearAuthCookies(res);
@@ -40,15 +30,11 @@ export const verifyToken = async (req, res, next) => {
       });
     }
 
-    // Attach user to request
     req.user = user;
-    req.token = token;
     next();
     
   } catch (error) {
     console.error("Auth Middleware Error:", error);
-    
-    // Always clear invalid tokens with consistent options
     clearAuthCookies(res);
 
     const response = {
