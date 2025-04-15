@@ -11,26 +11,33 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaRobot, FaFingerprint, FaUserShield, FaSignInAlt } from 'react-icons/fa';
 import { GiArtificialIntelligence, GiSpinningBlades } from 'react-icons/gi';
 import { useAuthStore } from '../stores/useAuthStore.js';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [isHovering, setIsHovering] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { signin, loading, error, clearError } = useAuthStore();
+  
+  // Get redirect path or default to home
+  const from = location.state?.from?.pathname || '/';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (error) clearError(); // Clear errors on typing
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await signin(formData);
-      navigate('/');
+      // Redirect to intended page or home
+      navigate(from, { replace: true });
     } catch (err) {
       console.error('Login error:', err);
+      // Error is already set in the store
     }
   };
 
@@ -274,6 +281,14 @@ const Login = () => {
               fullWidth
               disabled={loading}
               variant="contained"
+              onClick={() => {
+                // Force page reload if navigation fails
+                setTimeout(() => {
+                  if (window.location.pathname === '/login') {
+                    window.location.href = '/';
+                  }
+                }, 1000);
+              }}
               sx={{
                 background: 'linear-gradient(45deg, #4fc3f7, #00acc1)',
                 fontSize: '1.1rem',

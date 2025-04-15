@@ -20,9 +20,16 @@ import { useNavigate } from 'react-router-dom';
 const API_URL = "https://nexus-chatbot-ai.onrender.com/api/chat" || 'http://localhost:5000/api/chat'; // Your backend endpoint
 const Chat = () => {
 const {user} = useAuthStore()
-const navigate = useNavigate()
-const handleSignout = ()=>{
-  navigate('/signout')
+const {signout} = useAuthStore()
+
+const handleSignout = async ()=> {
+ try {
+   await signout();
+       // No need for navigate here since signout function handles redirection
+     } catch (error) {
+       console.error('Signout error:', error);
+       setIsSigningOut(false); // Reset state if error occurs
+     }
 }
   const {
     messages,
