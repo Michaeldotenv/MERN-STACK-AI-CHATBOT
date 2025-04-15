@@ -39,7 +39,6 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    // Only check auth if not already authenticated
     if (!isAuthenticated) {
       checkAuth();
     }
@@ -52,18 +51,16 @@ function App() {
         {/* Protected routes */}
         <Route path="/" element={<AuthGuard><Home /></AuthGuard>} />
         <Route path="/chats" element={<AuthGuard><Chat /></AuthGuard>} />
-        
-        {/* Auth routes */}
+
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<GuestGuard><Signup /></GuestGuard>} />
         <Route path="/demo" element={<GuestGuard><AuthDemoPage /></GuestGuard>} />
-        
-        {/* Password recovery (should be accessible without auth) */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        
-        {/* 404 - No guard needed */}
-        <Route path="/404" element={<NotFound />} />
+
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </ThemeProvider>
   );
