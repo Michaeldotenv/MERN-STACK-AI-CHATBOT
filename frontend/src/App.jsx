@@ -50,7 +50,7 @@ function App() {
       <CssBaseline />
       <Routes location={location} key={location.pathname}>
         {/* Protected routes */}
-        <Route path="/" element={<AuthGuard><Home /></AuthGuard>} />
+        <Route path="/" element={<Home />} />
         <Route path="/chats" element={<AuthGuard><Chat /></AuthGuard>} />
         
         {/* Auth routes */}
