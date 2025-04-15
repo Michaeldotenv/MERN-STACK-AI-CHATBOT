@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Container, Typography, Button, Paper, Avatar } from '@mui/material';
 import { motion } from 'framer-motion';
 import { FaSignOutAlt, FaRobot } from 'react-icons/fa';
-import { useAuthStore } from '../stores/useAuthStore';
+import { useAuthStore } from '../stores/useAuthStore.js';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {

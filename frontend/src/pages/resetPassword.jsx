@@ -6,7 +6,7 @@ import {
 import { motion } from 'framer-motion';
 import { FaLock, FaArrowLeft } from 'react-icons/fa';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAuthStore } from '../stores/useAuthStore';
+import { useAuthStore } from '../stores/useAuthStore.js';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
