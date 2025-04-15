@@ -281,14 +281,7 @@ const Login = () => {
               fullWidth
               disabled={loading}
               variant="contained"
-              onClick={() => {
-                // Force page reload if navigation fails
-                setTimeout(() => {
-                  if (window.location.pathname === '/login') {
-                    window.location.href = '/';
-                  }
-                }, 1000);
-              }}
+             
               sx={{
                 background: 'linear-gradient(45deg, #4fc3f7, #00acc1)',
                 fontSize: '1.1rem',

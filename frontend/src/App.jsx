@@ -1,17 +1,19 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, createTheme, CircularProgress, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
+
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Chat from './pages/Chat';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/resetPassword';
 import AuthDemoPage from './components/autoDemoPage';
 import { AuthGuard, GuestGuard } from './components/AuthGuard';
 import { useAuthStore } from './stores/useAuthStore.js';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/resetPassword';
 
+// Theme config
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -35,24 +37,25 @@ const darkTheme = createTheme({
 });
 
 function App() {
-  const { checkAuth, isAuthenticated } = useAuthStore();
+  const { checkAuth } = useAuthStore();
   const [authChecked, setAuthChecked] = useState(false);
   const location = useLocation();
 
+  // Perform auth check on first mount
   useEffect(() => {
     const verify = async () => {
       try {
-        await checkAuth(); // 🚨 this probably throws silently
+        await checkAuth();
       } catch (err) {
         console.error("Auth check failed:", err);
       } finally {
         setAuthChecked(true);
       }
     };
-
     verify();
   }, [checkAuth]);
 
+  // Initial loading screen
   if (!authChecked) {
     return (
       <Box
@@ -69,6 +72,7 @@ function App() {
     );
   }
 
+  // Main App content
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
@@ -84,7 +88,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-        {/* 404 */}
+        {/* Fallback 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </ThemeProvider>

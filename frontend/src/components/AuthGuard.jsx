@@ -1,55 +1,12 @@
-// src/components/AuthGuard.jsx
-import { useEffect, useState } from 'react';
 import { useAuthStore } from '../stores/useAuthStore';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
 
-/**
- * AuthGuard - Protects routes that require authentication
- * Redirects to login if not authenticated
- */
 export const AuthGuard = ({ children }) => {
-  const { isAuthenticated, checkAuth, loading } = useAuthStore();
-  const [isChecking, setIsChecking] = useState(true);
+  const { isAuthenticated, loading } = useAuthStore();
   const location = useLocation();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const verifyAuth = async () => {
-      try {
-        const authValid = await checkAuth();
-        
-        // If checkAuth fails but we have a token, force logout
-        if (!authValid && document.cookie.includes('token')) {
-          await useAuthStore.getState().signout();
-          navigate('/login', { 
-            state: { from: location },
-            replace: true
-          });
-          return;
-        }
-
-        if (isMounted) {
-          setIsChecking(false);
-        }
-      } catch (error) {
-        console.error('Auth verification error:', error);
-        if (isMounted) {
-          setIsChecking(false);
-        }
-      }
-    };
-
-    verifyAuth();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [checkAuth, location, navigate]);
-
-  if (isChecking || loading) {
+  if (loading) {
     return (
       <Box
         sx={{
@@ -66,55 +23,18 @@ export const AuthGuard = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    // Preserve the intended location for post-login redirect
-    return (
-      <Navigate 
-        to="/login" 
-        state={{ from: location }} 
-        replace 
-      />
-    );
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;
 };
 
-/**
- * GuestGuard - Protects auth routes (login/signup)
- * Redirects to home if already authenticated
- */
 export const GuestGuard = ({ children }) => {
-  const { isAuthenticated, checkAuth, loading } = useAuthStore();
-  const [isChecking, setIsChecking] = useState(true);
+  const { isAuthenticated, loading } = useAuthStore();
   const location = useLocation();
-  const navigate = useNavigate();
   const from = location.state?.from?.pathname || '/';
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const verifyAuth = async () => {
-      try {
-        await checkAuth();
-        if (isMounted) {
-          setIsChecking(false);
-        }
-      } catch (error) {
-        console.error('Auth check error:', error);
-        if (isMounted) {
-          setIsChecking(false);
-        }
-      }
-    };
-
-    verifyAuth();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [checkAuth]);
-
-  if (isChecking || loading) {
+  if (loading) {
     return (
       <Box
         sx={{
@@ -131,7 +51,6 @@ export const GuestGuard = ({ children }) => {
   }
 
   if (isAuthenticated) {
-    // Redirect to intended page or home
     return <Navigate to={from} replace />;
   }
 
