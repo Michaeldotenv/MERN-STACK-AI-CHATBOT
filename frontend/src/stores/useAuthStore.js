@@ -1,6 +1,6 @@
 // src/stores/useAuthStore.js
 import { create } from 'zustand';
-import { apiSignIn, apiSignUp, apiSignOut, apiCheckAuth, apiForgotPassword, apiResetPassword } from '../services/authService';
+import { apiSignIn, apiSignUp, apiSignOut, apiCheckAuth, apiForgotPassword, apiResetPassword } from '../services/authServices.js';
 
 export const useAuthStore = create((set) => ({
   user: null,
