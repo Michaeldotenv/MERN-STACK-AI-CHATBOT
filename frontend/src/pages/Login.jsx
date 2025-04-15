@@ -335,7 +335,7 @@ const handleForgotPassword = ()=>{
           <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Typography variant="body2" sx={{ opacity: 0.7 }}>
               Not part of the network?{' '}
-              <Link href="/signup" sx={{ color: '#4fc3f7', textDecoration: 'none' }}>
+              <Link to="/signup" sx={{ color: '#4fc3f7', textDecoration: 'none' }}>
                 Initialize your identity
               </Link>
             </Typography>
