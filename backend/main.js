@@ -1,11 +1,3 @@
-
-
-// FORCE-IGNORE path-to-regexp MISSING MODULE ERROR
-try { require('path-to-regexp'); } 
-catch { /* Ignore */ }
-process.env.EXPRESS_PATH_TO_REGEXP = '0'; // Force Express 4.x behavior
-
-
 import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -14,39 +6,39 @@ import { connectDB } from './database/db.js';
 import userRoutes from './routes/userRoutes.js';
 import chatRoutes from "./routes/chatRoutes.js";
 import errorHandler from './middleware/errorHandler.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 
-const PORT = process.env.PORT || 5000;
-const FRONTEND_URL = process.env.FRONTEND_URL || "https://nexus-ai-chatbotv2.onrender.com";
-const JWT_SECRET = process.env.JWT_SECRET || "vihb7e8hrwivwpi9ivg9oj589vjwinrjhojgrfuygi";
-const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || "nexus-chatbot-ai.onrender.com";
+// Hardcoded configurations - centralized for consistency
+const PORT = 5000;
+const FRONTEND_URL = "https://nexus-ai-chatbotv2.onrender.com";
+const JWT_SECRET = "vihb7e8hrwivwpi9ivg9oj589vjwinrjhojgrfuygi";
+const COOKIE_DOMAIN = "nexus-chatbot-ai.onrender.com";
 
+// Set as environment variables for compatibility with rest of the app
 process.env.JWT_SECRET = JWT_SECRET;
-process.env.NODE_ENV = process.env.NODE_ENV || "production";
+process.env.NODE_ENV = "production";
 process.env.JWT_EXPIRES_IN = "7d";
 
 const app = express();
 
 // Enhanced CORS configuration
-const corsOptions = {
+app.use(cors({
   origin: [
     FRONTEND_URL,
-    "http://localhost:5173",
     "http://localhost:5174"
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'],
   exposedHeaders: ['set-cookie']
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+}));
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser(JWT_SECRET));
+app.use(cookieParser(JWT_SECRET)); // Using hardcoded secret
 
 // Logging
 app.use(morgan('dev'));
@@ -60,6 +52,10 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'healthy' });
 });
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.send('API is working 🎉');
+});
 
 
 // Error handling
