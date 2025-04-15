@@ -12,7 +12,7 @@ import { fileURLToPath } from 'url';
 
 // Hardcoded configurations - centralized for consistency
 const PORT = 5000;
-const FRONTEND_URL = "https://nexus-ai-chatbotv2.onrender.com";
+const FRONTEND_URL = "nexus-chatbot-ai.onrender.com";
 const JWT_SECRET = "vihb7e8hrwivwpi9ivg9oj589vjwinrjhojgrfuygi";
 const COOKIE_DOMAIN = "nexus-chatbot-ai.onrender.com";
 
@@ -27,6 +27,7 @@ const app = express();
 app.use(cors({
   origin: [
     FRONTEND_URL,
+    "https://nexus-ai-chatbotv2.onrender.com",
     "http://localhost:5174"
   ],
   credentials: true,
