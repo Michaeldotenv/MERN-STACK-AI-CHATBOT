@@ -82,7 +82,7 @@ function App() {
         <Route path="/chats" element={<AuthGuard><Chat /></AuthGuard>} />
 
         {/* Public routes */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<GuestGuard><Login /></GuestGuard>} />
         <Route path="/signup" element={<GuestGuard><Signup /></GuestGuard>} />
         <Route path="/demo" element={<GuestGuard><AuthDemoPage /></GuestGuard>} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
