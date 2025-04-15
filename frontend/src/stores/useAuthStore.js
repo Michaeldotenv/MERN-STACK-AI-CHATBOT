@@ -1,15 +1,14 @@
 // src/stores/useAuthStore.js
 import { create } from 'zustand';
-import { apiSignIn, apiSignUp, apiSignOut, apiCheckAuth } from '../services/authServices.js';
-import axios from "axios"
+import { apiSignIn, apiSignUp, apiSignOut, apiCheckAuth , apiForgotPassword, apiResetPassword} from '../services/authService';
 
-
-const API_URL= process.env.REACT_APP_API_URL || "https://nexus-chatbot-ai.onrender.com/api/v1" || "http://localhost:5000/api/v1"
 export const useAuthStore = create((set) => ({
   user: null,
   isAuthenticated: false,
   loading: false,
+  isLoading: false,
   error: null,
+  message: null,
   
   clearError: () => set({ error: null }),
   
@@ -51,26 +50,24 @@ export const useAuthStore = create((set) => ({
     }
   },
   
-  // Email verification
-  verifyEmail: async (code) => {
-    set({ isLoading: true });
+ /*verifyEmail: async (code) => {
+    set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
-        `${API_URL}/verify-email`, 
-        { code },
-        { withCredentials: true }
-      );
+      const response = await apiVerifyEmail(code);
       set({ 
-        user: response.data.user,
+        user: response.user,
         isLoading: false 
       });
-      return response.data;
+      return response;
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Verification failed';
-      set({ error: errorMsg, isLoading: false });
-      throw new Error(errorMsg);
+      set({ 
+        error: error.message || 'Verification failed',
+        isLoading: false 
+      });
+      throw error;
     }
-  },
+  },*/
+  
   signout: async () => {
     set({ loading: true, error: null });
     try {
@@ -80,6 +77,8 @@ export const useAuthStore = create((set) => ({
         isAuthenticated: false, 
         loading: false 
       });
+      // Force full page reload to clear all state
+      window.location.href = '/login';
     } catch (error) {
       set({ 
         error: error.message || 'Failed to sign out', 
@@ -98,56 +97,51 @@ export const useAuthStore = create((set) => ({
         isAuthenticated: true, 
         loading: false 
       });
-      return response;
+      return true;
     } catch (error) {
       set({ 
         user: null,
         isAuthenticated: false, 
         loading: false,
-        error: null // Don't set error on auth check failures
+        error: null // Don't show error for auth checks
       });
+      return false;
     }
   },
+  
   forgotPassword: async (email) => {
     set({ isLoading: true, error: null, message: null });
     try {
-      const res = await axios.post(
-        `${API_URL}/forgot-password`,
-        { email },
-        { withCredentials: true }
-      );
+      const response = await apiForgotPassword(email);
       set({
-        message: res.data.message,
-        isLoading: false,
-        error: null,
+        message: response.message,
+        isLoading: false
       });
+      return response;
     } catch (error) {
       set({
-        isLoading: false,
-        message: null,
-        error: error.response?.data?.message || "Something went wrong",
+        error: error.message || "Something went wrong",
+        isLoading: false
       });
+      throw error;
     }
   },
-  resetPassword: async (token, password, confirmPassword) => {
+  
+  resetPassword: async (token, passwords) => {
     set({ isLoading: true, error: null, message: null });
     try {
-      const res = await axios.post(
-        `${API_URL}/reset-password/${token}`,
-        { password, confirmPassword },
-        { withCredentials: true }
-      );
+      const response = await apiResetPassword(token, passwords);
       set({
-        isLoading: false,
-        message: res.data.message,
-        error: null,
+        message: response.message,
+        isLoading: false
       });
+      return response;
     } catch (error) {
       set({
-        isLoading: false,
-        message: null,
-        error: error.response?.data?.message || "Reset failed",
+        error: error.message || "Reset failed",
+        isLoading: false
       });
+      throw error;
     }
-  },
+  }
 }));

@@ -43,7 +43,7 @@ const Signup = () => {
     
     try {
       await signup(formData);
-      navigate('/verify-email', { state: { email: formData.email } });
+      navigate('/login', { state: { email: formData.email } });
     } catch (err) {
       console.error('Signup error:', err);
     }

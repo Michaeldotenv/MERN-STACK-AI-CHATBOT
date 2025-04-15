@@ -10,7 +10,6 @@ import AuthDemoPage from './components/autoDemoPage';
 import { AuthGuard, GuestGuard } from './components/AuthGuard';
 import { useAuthStore } from './stores/useAuthStore';
 import ForgotPassword from './pages/ForgotPassword';
-import VerifyEmail from './pages/VerifyEmail';
 import ResetPassword from './pages/resetPassword';
 
 const darkTheme = createTheme({
@@ -51,7 +50,6 @@ function App() {
           <Route path="/signup" element={<GuestGuard><Signup /></GuestGuard>} />
           <Route path="/chats" element={<AuthGuard><Chat /></AuthGuard>} />
           <Route path="/demo" element={<GuestGuard><AuthDemoPage /></GuestGuard>} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/forgotpassword" element={<GuestGuard><ForgotPassword /></GuestGuard>} />
           <Route path="/reset-password/:token" element={<GuestGuard><ResetPassword /></GuestGuard>} />
           <Route path="*" element={<GuestGuard><NotFound /></GuestGuard>} />

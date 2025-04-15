@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+/*import { useState, useRef, useEffect } from 'react';
 import { 
   Box, Typography, Button, Paper, Container,
   CircularProgress, Stack
@@ -223,4 +223,4 @@ const VerifyEmail = () => {
   );
 };
 
-export default VerifyEmail;
+export default VerifyEmail;*/
