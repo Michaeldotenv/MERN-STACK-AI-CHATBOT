@@ -13,7 +13,6 @@ import AuthDemoPage from './components/autoDemoPage';
 import { AuthGuard, GuestGuard } from './components/AuthGuard';
 import { useAuthStore } from './stores/useAuthStore.js';
 
-// Theme config
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -37,26 +36,15 @@ const darkTheme = createTheme({
 });
 
 function App() {
-  const { checkAuth } = useAuthStore();
+  const { isLoading, checkAuth } = useAuthStore();
   const [authChecked, setAuthChecked] = useState(false);
   const location = useLocation();
 
-  // Perform auth check on first mount
   useEffect(() => {
-    const verify = async () => {
-      try {
-        await checkAuth();
-      } catch (err) {
-        console.error("Auth check failed:", err);
-      } finally {
-        setAuthChecked(true);
-      }
-    };
-    verify();
+    checkAuth().finally(() => setAuthChecked(true));
   }, [checkAuth]);
 
-  // Initial loading screen
-  if (!authChecked) {
+  if (!authChecked || isLoading) {
     return (
       <Box
         sx={{
@@ -72,23 +60,17 @@ function App() {
     );
   }
 
-  // Main App content
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Routes location={location} key={location.pathname}>
-        {/* Protected routes */}
         <Route path="/" element={<AuthGuard><Home /></AuthGuard>} />
         <Route path="/chats" element={<AuthGuard><Chat /></AuthGuard>} />
-
-        {/* Public routes */}
         <Route path="/login" element={<GuestGuard><Login /></GuestGuard>} />
         <Route path="/signup" element={<GuestGuard><Signup /></GuestGuard>} />
         <Route path="/demo" element={<GuestGuard><AuthDemoPage /></GuestGuard>} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-
-        {/* Fallback 404 */}
+        <Route path="/forgot-password" element={<GuestGuard><ForgotPassword /></GuestGuard>} />
+        <Route path="/reset-password/:token" element={<GuestGuard><ResetPassword /></GuestGuard>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </ThemeProvider>

@@ -3,10 +3,10 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
 
 export const AuthGuard = ({ children }) => {
-  const { isAuthenticated, loading } = useAuthStore();
+  const { isAuthenticated, isLoading } = useAuthStore();
   const location = useLocation();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Box
         sx={{
@@ -22,19 +22,15 @@ export const AuthGuard = ({ children }) => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  return children;
+  return isAuthenticated ? children : <Navigate to="/login" state={{ from: location }} replace />;
 };
 
 export const GuestGuard = ({ children }) => {
-  const { isAuthenticated, loading } = useAuthStore();
+  const { isAuthenticated, isLoading } = useAuthStore();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Box
         sx={{
@@ -50,9 +46,5 @@ export const GuestGuard = ({ children }) => {
     );
   }
 
-  if (isAuthenticated) {
-    return <Navigate to={from} replace />;
-  }
-
-  return children;
+  return isAuthenticated ? <Navigate to={from} replace /> : children;
 };
