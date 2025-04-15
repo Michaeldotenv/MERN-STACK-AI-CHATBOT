@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const HF_API_KEY = process.env.HF_API_KEY // Get from .env
+const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY // Get from .env
 const HF_MODEL = 'mistralai/Mistral-7B-Instruct-v0.1'; // Change to your preferred model
 
 const hfClient = axios.create({
   baseURL: 'https://api-inference.huggingface.co/models',
   headers: {
-    'Authorization': `Bearer ${HF_API_KEY}`,
+    'Authorization': `Bearer ${HUGGINGFACE_API_KEY}`,
     'Content-Type': 'application/json',
   },
 });
