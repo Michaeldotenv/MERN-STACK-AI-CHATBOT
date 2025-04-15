@@ -51,10 +51,7 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'healthy' });
 });
 
-// Root endpoint
-app.get('/', (req, res) => {
-  res.send('API is working 🎉');
-});
+
 
 // Error handling
 app.use(errorHandler);
