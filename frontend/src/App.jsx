@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { useEffect } from 'react';
 import Login from './pages/Login';
@@ -27,7 +27,7 @@ const darkTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none',
+          textTransform: 'none',  
           borderRadius: 8,
         },
       },
@@ -45,7 +45,6 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Router> {/* ✅ Now wrapping the router */}
         <Routes>
           <Route path="/" element={<AuthGuard><Home /></AuthGuard>} />
           <Route path="/login" element={<GuestGuard><Login /></GuestGuard>} />
@@ -57,7 +56,6 @@ function App() {
           <Route path="/reset-password/:token" element={<GuestGuard><ResetPassword /></GuestGuard>} />
           <Route path="*" element={<GuestGuard><NotFound /></GuestGuard>} />
         </Routes>
-      </Router>
     </ThemeProvider>
   );
 }
