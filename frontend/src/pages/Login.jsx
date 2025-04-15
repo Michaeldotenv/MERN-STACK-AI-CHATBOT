@@ -272,7 +272,7 @@ const handleForgotPassword = ()=>{
 <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Typography variant="body2" sx={{ opacity: 0.7 }}>
               forgot your encryption key?{' '}
-              <Link href="/forgotpassword" sx={{ color: '#4fc3f7', textDecoration: 'none' }}>
+              <Link to="/forgotpassword" sx={{ color: '#4fc3f7', textDecoration: 'none' }}>
                reconfigure your key
               </Link>
             </Typography>

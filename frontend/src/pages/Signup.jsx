@@ -330,7 +330,7 @@ const Signup = () => {
           <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Typography variant="body2" sx={{ opacity: 0.7 }}>
               Already have an identity?{' '}
-              <Link href="/login" sx={{ color: '#4fc3f7', textDecoration: 'none' }}>
+              <Link to="/login" sx={{ color: '#4fc3f7', textDecoration: 'none' }}>
                 Access the Nexus
               </Link>
             </Typography>
