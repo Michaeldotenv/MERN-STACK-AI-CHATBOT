@@ -1,3 +1,5 @@
+
+process.env.EXPRESS_PATH_TO_REGEXP = '0';
 import express from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -6,6 +8,7 @@ import { connectDB } from './database/db.js';
 import userRoutes from './routes/userRoutes.js';
 import chatRoutes from "./routes/chatRoutes.js";
 import errorHandler from './middleware/errorHandler.js';
+
 
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://nexus-ai-chatbotv2.onrender.com";
